@@ -174,3 +174,32 @@ print(f"  Avg RMSE: {avg_rmse:.2f}")
 print(f"  Avg MAE: {avg_mae:.2f}")
 print(f"  Avg R²: {avg_r2:.4f}")
 print(f"{'-'*60}")
+
+# Train final model on all data to get feature importance
+print(f"\n{'='*60}")
+print("Feature Importance Analysis")
+print(f"{'='*60}")
+final_model = lgb.LGBMRegressor(
+    n_estimators=500,
+    learning_rate=0.05,
+    max_depth=7,
+    num_leaves=31,
+    min_child_samples=20,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    random_state=42,
+    verbose=-1
+)
+final_model.fit(X, y)
+
+# Get feature importance
+feature_importance = pd.DataFrame({
+    'feature': X.columns,
+    'importance': final_model.feature_importances_
+}).sort_values('importance', ascending=False)
+
+print("\nTop 20 Most Important Features:")
+for idx, row in feature_importance.head(20).iterrows():
+    print(f"  {row['feature']:30s} : {row['importance']:8.1f}")
+
+print(f"\n{'='*60}")
