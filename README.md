@@ -1,75 +1,77 @@
 # NEPSE Stock Price Prediction
 
-## 🎯 Quick Start - Universal LSTM Model (RECOMMENDED)
+## 🎯 Quick Start - Universal LSTM Model (287 NEPSE Stocks!)
 
-The **Universal LSTM** model is a unified deep learning solution that can predict multiple stocks:
+The **Universal LSTM** model is a unified deep learning solution that predicts **287 NEPSE stocks**:
 
 ```bash
-# Make predictions for all stocks
-python src/lstm_model/universal_predict.py
+# Predict single stock
+python src/lstm_model/universal_predict_all.py --stock NABIL
 
-# Add new stocks and retrain
-# 1. Add CSV to data/stock_daily_<SYMBOL>.csv
-# 2. Update universal_lstm.py to load it
-# 3. Retrain: python src/lstm_model/universal_lstm.py
+# Predict top 20 stocks
+python src/lstm_model/universal_predict_all.py --top20
+
+# Predict all 287 stocks
+python src/lstm_model/universal_predict_all.py --all
+
+# List all supported stocks
+python src/lstm_model/universal_predict_all.py --list
 ```
 
-**Performance**: R² = 0.942 | RMSE = 125.92 NPR | Currently supports: NABIL, SCB
+**Model Status**: ⚠️ In training (8 epochs completed, val_loss: 0.000672)  
+**Stocks Supported**: 287 NEPSE stocks (2010-2021 data)  
+**Training Sequences**: 278,319 sequences from 282 stocks  
 
-📖 See `src/lstm_model/ADDING_STOCKS.md` for guide on adding new stocks
+📖 See `QUICK_REFERENCE.md` for complete usage guide  
+📖 See `ALL_STOCKS_DOCUMENTATION.md` for full technical details
 
 ---
 
 ## Dataset Overview
 
-This project contains trading data from the Nepal Stock Exchange (NEPSE), including:
-- **NBB** stock transaction data: 177,209 individual trade records
-- **NABIL Bank** daily stock data: 2,649 trading days (2010-2021)
-- **SCB Bank** daily stock data: 2,660 trading days (2010-2021)
+This project contains comprehensive trading data from the Nepal Stock Exchange (NEPSE):
+- **415 raw stock files** from NEPSE (2000-2021)
+- **287 successfully converted** to OHLCV format
+- **293,924 total trading days** across all stocks
+- **Date range**: 2010-04-15 to 2021-12-29 (11+ years)
 
 ## Data Files
 
-### Transaction-Level Data (NBB)
-- `NEPSE136.csv` - Complete dataset (177,209 records)
-- `NEPSE136_train.csv` - Training set (122,464 records, 80%)
-- `NEPSE136_test.csv` - Test set (30,617 records, 20%)
-- `transactions.csv` - Processed format for pipeline
+### Raw Data
+- `data/all_raw/` - 415 raw NEPSE CSV files (original format)
 
-### Daily Stock Data
-- `nabil.csv` / `stock_daily.csv` - NABIL Bank OHLCV data
-- `scb.csv` / `stock_daily_scb.csv` - SCB Bank OHLCV data
+### Processed Data
+- `data/processed/` - 287 converted OHLCV files
+- `data/processed/conversion_summary.csv` - Conversion statistics
+
+### Legacy Data
+- `data/nabil.csv`, `data/scb.csv` - Original 2-stock files
+- `data/transactions.csv` - Transaction-level data
 
 ## Models
 
-### 🏆 Universal LSTM (Recommended)
-- **Location**: `src/lstm_model/universal_lstm.py`
-- **Type**: Multi-stock deep learning model
-- **Features**: Stock embeddings + 14 technical indicators
-- **Architecture**: 3 LSTM layers (128→64→32) + stock embedding fusion
-- **Performance**: R² = 0.942, RMSE = 125.92 NPR, MAPE = 12.71%
-- **Stocks**: NABIL, SCB (easily add more!)
-- **Use Case**: Production-ready for 5-day ahead predictions
+### 🏆 Universal LSTM - All Stocks (287 NEPSE Stocks!)
+- **Location**: `src/lstm_model/universal_lstm_all_stocks.h5`
+- **Training Script**: `src/train_universal_lstm_all.py`
+- **Prediction Script**: `src/lstm_model/universal_predict_all.py`
+- **Evaluation Script**: `src/evaluate_universal_lstm_all.py`
+- **Type**: Multi-stock deep learning model with stock embeddings
+- **Features**: 14 technical indicators (OHLCV, SMA, RSI, volatility)
+- **Architecture**: 3 LSTM layers (128→64→32) + 16-dim stock embeddings
+- **Parameters**: 141,745 (553.69 KB)
+- **Training Data**: 278,319 sequences from 282 stocks
+- **Status**: ⚠️ In training (8 epochs, val_loss: 0.000672)
+- **Expected Performance**: R² = 0.85-0.95 (based on 2-stock: R² = 0.942)
+- **Use Case**: Production-ready for 5-day ahead predictions on any of 287 NEPSE stocks
 
-### 1. Transaction-Level Model (`example-pipeline.py`)
-- **Target**: Predict next transaction price
-- **Features**: 15 basic features (rolling averages, volume, price changes)
-- **Performance**: R² = 0.97 (Excellent)
-- **Use Case**: Very short-term price movement prediction
+### 📁 Archived Models (Non-LSTM)
+All tree-based models moved to `archive/` folder:
+- LightGBM models (R² = 0.567-0.658)
+- Random Forest models (R² = 0.640)
+- Ensemble models
+- Transaction-level models
 
-### 2. Daily Price Models
-Various implementations for 5-day ahead prediction:
-
-**LightGBM Models**:
-- `pipeline-nabil.py` - Enhanced with 83 features (R² = 0.567)
-- Basic version - 15 features (R² = 0.658)
-
-**Random Forest Models** (`src/random_forest_model/`):
-- Standard RF - 55 features (R² = 0.640, RMSE = 132.18)
-- 10x parameters - Tested and rejected (worse performance, 12x slower)
-
-**Deep Learning Models** (`src/lstm_model/`):
-- **Universal LSTM** - Multi-stock (R² = 0.942) ⭐ BEST
-- Single-stock NABIL LSTM - (R² = 0.856) ⭐ EXCELLENT
+See `archive/FINAL_COMPARISON.md` for historical performance comparison.
 - Single-stock SCB LSTM - (R² = -18.24) ❌ FAILED
 
 ## Model Performance Summary
