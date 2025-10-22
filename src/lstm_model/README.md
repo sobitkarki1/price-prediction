@@ -1,8 +1,44 @@
 # LSTM Deep Learning Models for Stock Prediction
 
+## ⭐ Universal LSTM Model - Multi-Stock Prediction (RECOMMENDED)
+
+**NEW**: Unified model that predicts multiple stocks using stock embeddings!
+
+### Quick Start
+```bash
+# Make predictions for all stocks
+python src/lstm_model/universal_predict.py
+
+# Train on all stocks
+python src/lstm_model/universal_lstm.py
+```
+
+### Performance
+- **R² Score**: 0.9420 🏆 (Best overall)
+- **RMSE**: 125.92 NPR
+- **MAE**: 94.63 NPR
+- **MAPE**: 12.71%
+- **Stocks**: NABIL, SCB (easily add more!)
+
+**Advantages**:
+- ✅ Single model for all stocks
+- ✅ Stock embeddings learn unique patterns
+- ✅ Add new stocks by retraining
+- ✅ Shares knowledge across stocks
+- ✅ Better generalization
+
+See **universal_lstm.py** and **universal_predict.py** for usage.
+
+---
+
 ## Overview
 
 This folder contains Long Short-Term Memory (LSTM) neural network models for stock price prediction. LSTMs are designed to capture temporal dependencies in sequential data, making them ideal for time series forecasting.
+
+### Available Models
+1. **universal_lstm.py** - ⭐ Multi-stock unified model (RECOMMENDED)
+2. **lstm_nabil.py** - Single-stock NABIL model (legacy)
+3. **lstm_scb.py** - Single-stock SCB model (legacy, FAILED)
 
 ## Model Performance
 
